@@ -1,24 +1,19 @@
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/react" 
-    }
-  ],
-  "routes": [
-    {
-      "src": "/_next/static/(.*)",
-      "headers": {
-        "cache-control": "public, max-age=31536000, immutable"
+    "version": 2,
+    "builds": [
+      {
+        "src": "package.json",
+        "use": "@vercel/static-build",
+        "config": {
+          "distDir": "build"
+        }
       }
-    },
-    {
-      "src": "/.*",
-      "dest": "/",
-      "headers": {
-        "cache-control": "public, max-age=0, must-revalidate"
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/index.html"
       }
-    }
-  ]
-}
+    ]
+  }
+  
