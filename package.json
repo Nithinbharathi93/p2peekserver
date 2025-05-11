@@ -4,8 +4,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
+    "build": "react-scripts build",
     "dev": "node --watch index",
-    "build":""
+    "eject": "react-scripts eject"
   },
   "author": "",
   "license": "ISC",
