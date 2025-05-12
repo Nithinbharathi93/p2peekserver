@@ -17,6 +17,7 @@ app.use(express.json());
 const roomAdmins = {};
 
 io.on('connection', (socket) => {
+  console.log('User connected:', socket.id);
 
 
   socket.on('join-room', ({ username, userstatus, roomid }) => {
@@ -25,15 +26,17 @@ io.on('connection', (socket) => {
     socket.join(roomid);
     socket.data = { username, userstatus, roomid };
 
+    console.log(`${username} joined room: ${roomid}`);
 
     if (userstatus === 'admin') {
       roomAdmins[roomid] = true;
     }
   });
-  
+
 
   socket.on('disconnect', () => {
     const { roomid, userstatus, username } = socket.data || {};
+    console.log(`User disconnected: ${socket.id} (${username})`);
 
     if (userstatus === 'admin' && roomid) {
       roomAdmins[roomid] = false;
@@ -53,7 +56,7 @@ app.post('/send', (req, res) => {
     username,
     message: Message,
   });
-
+  console.log(`Your message: ${username}:${Message}`);
   res.status(200).json({ status: 'Message broadcasted to room: ' + roomid });
 });
 
