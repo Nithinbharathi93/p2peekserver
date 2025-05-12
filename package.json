@@ -1,10 +1,10 @@
 {
   "name": "p2peekserver",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index",
-    "dev": "node --watch index",
+    "start": "node server",
+    "dev": "node --watch server",
     "build":""
   },
   "author": "",
