@@ -16,7 +16,7 @@ app.use(express.json());
 
 const roomAdmins = {};
 const activeRooms = {};
-const roomUsers = {}; // ✅ Tracks usernames per room
+const roomUsers = {}; 
 
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
 
     const roomExists = activeRooms[roomid] === true;
 
-    // ✅ Check if username already exists in the room
+    
     if (roomUsers[roomid]?.has(username)) {
       socket.emit('room-error', 'Username already exists in this room');
       return;
@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
 
       activeRooms[roomid] = true;
       roomAdmins[roomid] = true;
-      roomUsers[roomid] = new Set(); // ✅ initialize user list for new room
+      roomUsers[roomid] = new Set(); 
       console.log(`Admin ${username} created and joined room: ${roomid}`);
     } else {
       if (!roomExists) {
@@ -49,7 +49,7 @@ io.on('connection', (socket) => {
       }
 
       if (!roomUsers[roomid]) {
-        roomUsers[roomid] = new Set(); // Just in case
+        roomUsers[roomid] = new Set(); 
       }
 
       console.log(`Client ${username} joined room: ${roomid}`);
@@ -57,7 +57,7 @@ io.on('connection', (socket) => {
 
     socket.join(roomid);
     socket.data = { username, userstatus, roomid };
-    roomUsers[roomid].add(username); // ✅ Add to the user set
+    roomUsers[roomid].add(username); 
 
     io.to(roomid).emit('system-message', `${username} has joined the room.`);
   });
@@ -67,7 +67,7 @@ io.on('connection', (socket) => {
     console.log(`User disconnected: ${socket.id} (${username})`);
 
     if (roomid && roomUsers[roomid]) {
-      roomUsers[roomid].delete(username); // ✅ Remove user on disconnect
+      roomUsers[roomid].delete(username); 
     }
 
     if (userstatus === 'admin' && roomid) {
