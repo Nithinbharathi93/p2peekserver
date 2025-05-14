@@ -56,7 +56,7 @@ app.post('/send', (req, res) => {
     username,
     message: Message,
   });
-  console.log(`Your message: ${username}:${Message}`);
+  console.log(`A message from ${username}`);
   res.status(200).json({ status: 'Message broadcasted to room: ' + roomid });
 });
 
