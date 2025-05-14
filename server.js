@@ -15,24 +15,39 @@ app.use(cors());
 app.use(express.json());
 
 const roomAdmins = {};
+const activeRooms = {}; 
 
 io.on('connection', (socket) => {
   console.log('User connected:', socket.id);
 
-
   socket.on('join-room', ({ username, userstatus, roomid }) => {
     if (!username || !userstatus || !roomid) return;
+
+    const roomExists = activeRooms[roomid] === true;
+
+    if (userstatus === 'admin') {
+      if (roomExists) {
+        socket.emit('room-error', 'Room ID already exists');
+        return;
+      }
+
+      activeRooms[roomid] = true;
+      roomAdmins[roomid] = true;
+      console.log(`Admin ${username} created and joined room: ${roomid}`);
+    } else {
+      if (!roomExists) {
+        socket.emit('room-error', 'Room ID does not exist');
+        return;
+      }
+
+      console.log(`Client ${username} joined room: ${roomid}`);
+    }
 
     socket.join(roomid);
     socket.data = { username, userstatus, roomid };
 
-    console.log(`${username} joined room: ${roomid}`);
-
-    if (userstatus === 'admin') {
-      roomAdmins[roomid] = true;
-    }
+    io.to(roomid).emit('system-message', `${username} has joined the room.`);
   });
-
 
   socket.on('disconnect', () => {
     const { roomid, userstatus, username } = socket.data || {};
@@ -40,6 +55,9 @@ io.on('connection', (socket) => {
 
     if (userstatus === 'admin' && roomid) {
       roomAdmins[roomid] = false;
+      activeRooms[roomid] = false;
+
+      io.to(roomid).emit('system-message', `Admin ${username} has left. Room is now inactive.`);
     }
   });
 });
